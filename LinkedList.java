@@ -90,17 +90,26 @@ public class LinkedList {
 	 *         if index is negative or greater than the list's size
 	 */
 	public void add(int index, MemoryBlock block) {
+
+		if (index < 0 || index > size) {
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
+
 		Node node = new Node(block);
 
-		if (size == 0) {
+		if (index == 0) {
+			addFirst(block);
+		}
+
+		else if (index == size) {
+			addLast(block);
+		}
+
+		else if (size == 0) {
 			first = node;
 			last = node;
 			size++;
 
-		}
-
-		if (index == 0) {
-			addFirst(block);
 		}
 
 		else{
@@ -171,6 +180,9 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
+		if (index < 0 || index >=size){
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
 		return getNode(index).block;
 	}	
 
@@ -202,12 +214,19 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 
-		if (first == null) {
+		if (node == null)
+			throw new NullPointerException("node must not be null");
+
+		if (size == 0) {
 			return;
 		}
 
 		if (node.equals(first)) {
 			first = first.next;
+			if (size == 1) {
+				last = null;
+			}
+			size--;
 			return;
 		}
 
@@ -218,7 +237,11 @@ public class LinkedList {
 		}
 
 		if (index.next != null) {
+			if (index.next.equals(last)) {
+				last=index;
+			}
 			index.next = index.next.next;
+			size--;
 		}
 
 
@@ -232,7 +255,8 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		//// Write your code here
+		Node node = getNode(index);
+		remove(node);
 	}
 
 	/**
@@ -243,7 +267,7 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		//// Write your code here
+		remove(indexOf(block));
 	}	
 
 	/**
@@ -257,7 +281,20 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		//// Replace the following statement with your code
-		return "";
-	}
+
+		String s = "";
+		
+		Node current = first;
+		
+		while (current != null) {
+		
+		s = s + current.block + " ";
+		
+		current = current.next;
+		
+		}
+		
+		return s;
+		
+		}
 }
